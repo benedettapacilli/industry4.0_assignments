@@ -1,0 +1,51 @@
+<html>
+    <head>
+    </head>
+    <script src="model.js"></script>
+    <script src='http://www.espruino.com/js/uart.js'></script>
+    <body>
+        <script>
+
+            function extractDataFromResponse(response){
+                if(response != null){
+                    return response.split(",").map(str => parseInt(str));
+                }
+            }
+
+            // function doClassification(data){
+            //     console.log(data, data.length);
+            //     classify(data)
+            //     // var [p1, p2, p3] = classify(data)
+            //     // document.getElementById("result").innerHTML = "Classifer output: " + p1 + ", " + p2 + ", " + p3;
+            // }
+
+        	function getData() {
+                UART.eval('getData()', function(response) {
+                    document.getElementById("sensordata").value = response;
+                    UART.close();
+                    var data = extractDataFromResponse(response);
+                    //makeChart(data);
+                    var [p1, p2, p3] = classify(data);
+                    document.getElementById("result").innerHTML = "Classifer output: " + p1 + ", " + p2 + ", " + p3;
+                });
+	        }
+            // function copy() {
+            //     var copyText = document.getElementById("sensordata");
+            //     copyText.select();
+            //     copyText.setSelectionRange(0, 99999); /* For mobile devices */
+            //     navigator.clipboard.writeText(copyText.value);
+            //     alert("Copied the text: " + copyText.value);
+            // }
+
+        </script>
+
+        <div>
+            <button style="margin: 20px;" onclick='getData()'>Retrieve and process data</button>
+            <input style="margin: 20px; width: 500px" type="text" value=".." id="sensordata">
+            <!-- <button onclick="copy()">Copy</button> -->
+        </div>
+        <div>
+            <label style="margin: 20px; width: 500px" id="result">Classifer output:...</label>
+        </div>
+    </body>
+</html>
